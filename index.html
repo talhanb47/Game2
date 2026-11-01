@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#7462dc">
+  <title>Feelings Game | My Pictures & Sounds</title>
+  <style>
+    :root { color-scheme: light; --ink:#273456; --purple:#6556c9; --deep:#3e337a; --outline:#e8e4fa; --bg:#faf9ff; --shadow:0 14px 42px rgba(49,42,115,.11); }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family: ui-rounded, "Trebuchet MS", "Segoe UI", Arial, sans-serif; background:radial-gradient(circle at 13% 4%,#fff6c9 0,transparent 29%),radial-gradient(circle at 90% 3%,#d9f5ff 0,transparent 27%),linear-gradient(165deg,#f8f3ff,#f1f6ff 58%,#fff9f5); min-height:100vh; color:var(--ink); }
+    button { font:inherit; cursor:pointer; touch-action:manipulation; }
+    button:focus-visible { outline:4px solid #33ade6; outline-offset:3px; }
+    .shell { max-width:1170px; padding:22px 24px 30px; margin:auto; }
+    .header { display:flex; align-items:center; gap:14px; background:#fff; border:1px solid #fff; border-radius:28px; padding:17px 22px; box-shadow:var(--shadow); }
+    .brand-icon { flex:none; width:59px; height:59px; display:grid; place-items:center; background:linear-gradient(145deg,#fff1ab,#ffbb5d); border-radius:20px; font-size:33px; box-shadow:0 5px 0 #e5a858; }
+    h1,h2,h3,p { margin-top:0; }
+    h1 { margin:0; font-size:clamp(1.35rem,3vw,2rem); font-weight:900; color:var(--deep); letter-spacing:-.06em; }
+    .subtitle { font-size:.88rem; font-weight:700; color:#837da6; margin:4px 0 0; }
+    .header-right { margin-left:auto; display:flex; align-items:center; gap:10px; }
+    .score-pill { background:#fff7d8; color:#8d5a05; border:2px solid #ffe39a; border-radius:18px; padding:8px 14px; display:flex; align-items:center; gap:9px; white-space:nowrap; font-weight:900; }
+    .score-pill strong { font-size:1.45rem; }
+    .icon-button { background:#f0efff; border:2px solid transparent; border-radius:16px; min-width:48px; height:48px; color:#4d3eb2; font-size:1.38rem; }
+    .icon-button:hover,.icon-button:focus-visible { background:#e5e1ff; }
+    .music-button { background:#f0efff; color:#4d3eb2; border:2px solid transparent; border-radius:15px; padding:11px 12px; font-weight:900; white-space:nowrap; }
+    .music-button:hover,.music-button:focus-visible { background:#e5e1ff; }
+    .music-volume { display:flex; align-items:center; gap:6px; padding:4px 8px; background:#f6f4ff; border-radius:13px; color:#4d3eb2; font-size:.9rem; font-weight:900; white-space:nowrap; }
+    .music-volume input { width:89px; accent-color:#6556c9; cursor:pointer; }
+    .music-volume input:focus-visible { outline:3px solid #33ade6; outline-offset:2px; }
+    .tabs { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:21px auto 22px; }
+    .tab { border:2px solid #e5e2f4; background:#fff; border-radius:999px; padding:12px 22px; color:#68618e; font-size:1rem; font-weight:900; transition:.15s ease; }
+    .tab.active { background:var(--purple); color:#fff; border-color:var(--purple); box-shadow:0 5px 0 #4d3ea4; }
+    .tab:hover:not(.active) { border-color:#afa7f6; transform:translateY(-1px); }
+    [hidden] { display:none !important; }
+    .panel { background:rgba(255,255,255,.93); border:1px solid #fff; border-radius:28px; padding:clamp(18px,3.5vw,35px); box-shadow:var(--shadow); }
+    .hero { text-align:center; padding:26px 0 15px; }
+    .eyebrow { color:var(--purple); font-size:.81rem; text-transform:uppercase; font-weight:1000; letter-spacing:.11em; }
+    .hero h2 { font-size:clamp(2.1rem,5vw,3.8rem); letter-spacing:-.065em; color:var(--deep); margin:10px 0 12px; }
+    .hero p { font-size:1.08rem; color:#687293; max-width:650px; margin:0 auto 18px; line-height:1.65; }
+    .faces-strip { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; margin:26px auto 31px; }
+    .faces-strip span { font-size:clamp(2.3rem,5vw,4.1rem); background:#fff7ef; width:89px; height:89px; border-radius:25px; display:grid; place-items:center; box-shadow:0 6px 0 #f2dccc; }
+    .primary { background:#29b678; color:#fff; border:none; border-radius:18px; padding:17px 28px; font-weight:1000; font-size:1.12rem; box-shadow:0 7px 0 #158658; transition:.12s ease; }
+    .primary:hover { filter:brightness(1.04); transform:translateY(-1px); }
+    .primary:active { box-shadow:0 2px 0 #158658; transform:translateY(5px); }
+    .secondary { background:#fff; border:2px solid #d8d2f8; color:#5845b4; border-radius:16px; padding:12px 17px; font-size:1rem; font-weight:900; }
+    .secondary:hover { background:#f6f3ff; }
+    .microcopy { color:#867c9b; font-size:.89rem; margin-top:22px; }
+    .game-topline { display:flex; align-items:center; gap:12px; justify-content:space-between; flex-wrap:wrap; margin-bottom:15px; }
+    .round-pill { background:#fff3cc; color:#946511; border-radius:999px; padding:8px 15px; font-weight:1000; }
+    .student-tip { color:#655ca2; background:#f1edff; padding:9px 15px; border-radius:999px; font-weight:800; }
+    .progress-track { height:12px; overflow:hidden; border-radius:999px; background:#efeafb; margin-bottom:22px; }
+    .progress-fill { width:0; height:100%; border-radius:999px; background:linear-gradient(90deg,#8873f5,#54cbd4); transition:width .32s; }
+    .question-card { text-align:center; border:3px solid #e9e4ff; background:linear-gradient(160deg,#faf9ff,#fff); padding:clamp(20px,3vw,30px); border-radius:24px; margin-bottom:23px; }
+    .question-card h2 { font-size:clamp(1.8rem,4.5vw,3rem); color:var(--deep); line-height:1.2; margin:9px 0; letter-spacing:-.04em; }
+    .target-word { color:#6655ce; border-bottom:5px solid #e3dcff; }
+    .translation { display:inline-flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; background:#f0edff; color:#5549a0; border-radius:15px; padding:9px 17px; font-size:1.13rem; font-weight:900; margin-top:6px; }
+    .translation strong { font-size:1.42rem; }
+    .question-actions { display:flex; justify-content:center; flex-wrap:wrap; gap:9px; margin-top:18px; }
+    .question-actions button { background:#fff; color:#5846b1; border:2px solid #dbd6fb; padding:11px 17px; border-radius:14px; font-weight:900; }
+    .options { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:16px; }
+    .option { min-width:0; position:relative; border:3px solid var(--border); border-radius:23px; padding:11px 10px 16px; text-align:center; background:linear-gradient(180deg,#fff,var(--pale)); box-shadow:0 7px 0 var(--border); transition:transform .15s; }
+    .option:hover:not(:disabled) { transform:translateY(-5px); }
+    .option:active:not(:disabled) { transform:translateY(3px); box-shadow:0 3px 0 var(--border); }
+    .option:disabled { cursor:default; }
+    .option.wrong { animation:wobble .35s ease 1; border-color:#fb969a; }
+    @keyframes wobble { 25% { transform:translateX(-8px) rotate(-3deg); } 75% { transform:translateX(8px) rotate(3deg); } }
+    .face-frame { width:100%; aspect-ratio:1 / .88; max-height:202px; border-radius:17px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#fff; border:2px solid rgba(255,255,255,.8); }
+    .face-frame img { width:100%; height:100%; object-fit:contain; display:block; }
+    .face-placeholder { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:7px; width:100%; height:100%; }
+    .face-placeholder .emoji { font-size:clamp(3.3rem,7vw,5.9rem); line-height:1; }
+    .face-placeholder .hint { color:#8983a3; font-size:.72rem; font-weight:800; overflow-wrap:anywhere; }
+    .option-name { display:block; margin-top:13px; color:#283555; font-weight:1000; font-size:clamp(1.03rem,2vw,1.5rem); }
+    .option-chinese { display:block; margin-top:3px; color:#7881a0; font-weight:800; font-size:.95rem; }
+    .hide-labels .option-name,.hide-labels .option-chinese { display:none; }
+    .game-bottom { display:flex; flex-wrap:wrap; gap:10px; justify-content:space-between; margin-top:26px; }
+    .round-control { display:flex; flex-wrap:wrap; gap:9px; }
+    .small-heading { color:var(--deep); font-size:clamp(1.6rem,3vw,2rem); letter-spacing:-.04em; margin:0 0 8px; }
+    .section-description { color:#737c95; line-height:1.55; margin-bottom:22px; }
+    .learn-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; }
+    .learn-card { border:2px solid var(--border); border-radius:22px; background:linear-gradient(175deg,#fff,var(--pale)); display:flex; align-items:center; gap:14px; text-align:left; padding:13px; }
+    .learn-card:hover { box-shadow:0 6px 16px #cfc9f45e; transform:translateY(-2px); }
+    .learn-card .face-frame { flex:0 0 112px; width:112px; aspect-ratio:1; }
+    .learn-card .face-placeholder .emoji { font-size:3.5rem; }
+    .learn-card .face-placeholder .hint { font-size:.6rem; }
+    .learn-card-text { min-width:0; }
+    .learn-card-text strong { font-size:1.2rem; color:var(--deep); display:block; margin-bottom:5px; }
+    .learn-card-text span { color:#686b85; display:block; font-weight:800; font-size:.94rem; }
+    .learn-card-text small { color:#6c63bc; font-weight:900; display:block; margin-top:8px; }
+    .setup-intro { background:#f6f4ff; padding:20px; border-radius:22px; border:2px solid #eae7ff; line-height:1.6; margin:20px 0; }
+    .setup-intro code,.filelist code { font-family:Consolas,"SFMono-Regular",monospace; font-size:.87em; background:#ede9ff; border-radius:5px; padding:2px 5px; }
+    .status-legend { display:flex; align-items:center; flex-wrap:wrap; gap:10px; justify-content:space-between; margin:19px 0 12px; }
+    .count-label { font-weight:900; color:#625a8b; }
+    .filelist { display:grid; gap:9px; }
+    .file-row { display:grid; grid-template-columns:minmax(110px,1fr) minmax(0,1.5fr) minmax(0,1.5fr); align-items:center; gap:9px; border:1px solid #e8e5f5; border-radius:14px; padding:11px 13px; background:#fff; }
+    .file-row .emotion-name { font-weight:1000; color:var(--deep); }
+    .file-row .asset-label { display:flex; gap:7px; align-items:center; min-width:0; font-size:.84rem; font-weight:800; overflow-wrap:anywhere; }
+    .good { color:#168353; }.missing { color:#be744c; }.loading { color:#9b91b5; }
+    .note { color:#6e758f; font-size:.91rem; line-height:1.65; }
+    .end-content { text-align:center; padding:15px 0 30px; }
+    .end-emoji { font-size:5rem; display:block; margin-bottom:18px; }
+    .end-score { color:#4c3ca2; font-size:3.4rem; font-weight:1000; margin-bottom:12px; }
+    .overlay { position:fixed; inset:0; background:rgba(31,29,65,.58); z-index:20; display:grid; place-items:center; padding:16px; }
+    .dialog { max-width:445px; width:100%; background:#fff; border:7px solid var(--modal-border,#77ddaf); border-radius:30px; box-shadow:0 20px 70px #211a5470; padding:28px; text-align:center; }
+    .dialog-icon { font-size:4.5rem; line-height:1.1; margin:5px 0 16px; }
+    .dialog h3 { font-size:2.1rem; color:var(--deep); margin:0 0 10px; }
+    .dialog p { color:#6f738d; line-height:1.5; font-size:1.08rem; font-weight:750; margin:0 0 24px; }
+    .dialog .primary { width:100%; }
+    .footer-note { color:#8d85a8; text-align:center; font-weight:700; font-size:.84rem; margin-top:20px; }
+    @media (max-width:880px) { .options { grid-template-columns:repeat(2,minmax(0,1fr)); } .learn-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .face-frame { max-height:245px; } }
+    @media (max-width:585px) { .header { flex-wrap:wrap; } .header-right { margin-left:0; flex:1 1 100%; justify-content:space-between; gap:7px; } .music-button { font-size:.88rem; padding:9px 10px; } .music-volume input { width:68px; } .shell { padding:12px 12px 20px; } .header { padding:12px; border-radius:20px; } .brand-icon { width:45px; height:45px; font-size:26px; border-radius:14px; } h1 { font-size:1.16rem; letter-spacing:-.05em; } .subtitle { font-size:.7rem; } .score-pill { padding:6px 8px; gap:4px; } .score-pill strong { font-size:1.1rem; } .icon-button { min-width:42px; height:42px; } .panel { border-radius:22px; } .tabs { gap:6px; } .tab { padding:10px 13px; font-size:.86rem; } .faces-strip { gap:8px; } .faces-strip span { width:63px; height:63px; border-radius:17px; font-size:2.45rem; } .options { gap:12px; } .option { padding:9px 7px 13px; } .learn-grid { grid-template-columns:1fr; } .file-row { grid-template-columns:1fr; gap:4px; } .hero { padding-top:5px; } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation:none !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="header">
+    <div class="brand-icon" aria-hidden="true">🌈</div>
+    <div>
+      <h1>Feelings Game</h1>
+      <p class="subtitle">My Pictures & Sounds · 感受与情绪小游戏</p>
+    </div>
+    <div class="header-right">
+      <div class="score-pill" aria-label="Stars earned"><span aria-hidden="true">⭐</span><strong id="header-score">0</strong></div>
+      <button id="sound-toggle" class="icon-button" type="button" title="Mute sound" aria-label="Mute sound">🔊</button>
+      <button id="music-toggle" class="music-button" type="button" title="Turn background music off" aria-label="Turn background music off" aria-pressed="true">🎵 Music On</button>
+      <label class="music-volume" for="music-volume">🔉 <input id="music-volume" type="range" min="0" max="60" step="1" value="18" aria-label="Background music volume" title="Background music volume"> <span id="music-volume-label">18%</span></label>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="Choose a game section">
+    <button class="tab active" data-tab="quiz" aria-selected="true" type="button">🎯 Play Game</button>
+    <button class="tab" data-tab="learn" aria-selected="false" type="button">📚 Learn Feelings</button>
+    <button class="tab" data-tab="media" aria-selected="false" type="button">🖼️ My Media Setup</button>
+  </nav>
+
+  <main>
+    <section id="quiz-panel" class="panel">
+      <div id="intro-state" class="hero">
+        <div class="eyebrow">Listen · Look · Learn</div>
+        <h2>How are you feeling?</h2>
+        <p>Play with your <strong>own pictures and voice recordings</strong>. Listen to an emotion, then choose the matching picture!</p>
+        <div class="faces-strip" aria-hidden="true"><span>😄</span><span>😢</span><span>😠</span><span>😱</span><span>🤩</span></div>
+        <button id="start-btn" type="button" class="primary">▶ Start the Game</button>
+        <p class="microcopy">10 rounds · 4 picture choices · 1 star per correct answer</p>
+      </div>
+
+      <div id="game-state" hidden>
+        <div class="game-topline">
+          <div class="round-pill">🌟 Round <span id="round-number">1</span> of <span id="round-total">10</span></div>
+          <div class="student-tip">👉 Take turns and tap a picture!</div>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Game progress" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" id="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+        <div class="question-card">
+          <div class="eyebrow">Can you find this feeling?</div>
+          <h2>Find <span class="target-word" id="target-word">Happy</span>!</h2>
+          <div class="translation"><strong id="target-chinese">开心</strong><span id="target-pinyin">(kāi xīn)</span></div>
+          <div class="question-actions">
+            <button id="hear-btn" type="button">🔊 Listen to My Audio</button>
+            <button id="labels-btn" type="button" aria-pressed="false">🙈 Hide Answer Labels</button>
+          </div>
+        </div>
+        <div id="options" class="options" aria-label="Choose a feeling picture"></div>
+        <div class="game-bottom">
+          <button id="restart-btn" type="button" class="secondary">↻ Start Over</button>
+          <div class="round-control"><button id="skip-btn" type="button" class="secondary">Skip Round →</button></div>
+        </div>
+      </div>
+
+      <div id="end-state" class="end-content" hidden>
+        <span class="end-emoji" aria-hidden="true">🏆</span>
+        <div class="eyebrow">Great work, everyone!</div>
+        <h2 class="small-heading">All 10 rounds complete!</h2>
+        <div id="end-score" class="end-score">0 / 10 ⭐</div>
+        <p class="section-description">Try again or practice by tapping the Learn Feelings cards.</p>
+        <button id="play-again-btn" type="button" class="primary">🎉 Play Again</button>
+      </div>
+    </section>
+
+    <section id="learn-panel" class="panel" hidden>
+      <h2 class="small-heading">📚 Learn the Feelings</h2>
+      <p class="section-description">Tap any picture to hear your recording. If an audio clip is missing, the browser will try to read the English word.</p>
+      <div id="learn-grid" class="learn-grid"></div>
+    </section>
+
+    <section id="media-panel" class="panel" hidden>
+      <h2 class="small-heading">🖼️ Add Your Own Images & Audio</h2>
+      <p class="section-description">No programming needed. Put your files into the folders beside <strong>index.html</strong>, then reopen or refresh the game.</p>
+      <div class="setup-intro">
+        <strong>1.</strong> Open the <code>images</code> folder and add your pictures, e.g. <code>Happy.png</code>.<br>
+        <strong>2.</strong> Open the <code>audio</code> folder and add your voice clips, e.g. <code>Happy.mp3</code>.<br>
+        <strong>3.</strong> Use the <strong>exact English names</strong> shown below (capital first letter).<br>
+        <strong>4.</strong> Open <code>index.html</code> in Chrome, Edge, or another modern browser.
+      </div>
+      <p class="note"><strong>Accepted images:</strong> .png, .jpg, .jpeg, .webp, .gif, .svg &nbsp; | &nbsp; <strong>Accepted audio:</strong> .mp3, .wav, .m4a, .ogg, .webm. You may mix extensions, but use only one file per feeling when possible.</p>
+      <div class="status-legend"><span class="count-label" id="media-count">Checking your files…</span><button type="button" id="recheck-btn" class="secondary">↻ Recheck My Files</button></div>
+      <div id="filelist" class="filelist"></div>
+      <div class="filelist" style="margin-top:12px" aria-label="Background music file">
+        <div class="file-row" id="music-file-row" aria-live="polite"><div class="emotion-name">🎵 Background music</div><div class="asset-label loading">◌ Checking</div><div class="asset-label"><code>audio/BackgroundMusic.mp3</code></div></div>
+      </div>
+      <p class="note" style="margin-top:14px"><strong>Background music:</strong> Put your own <code>BackgroundMusic.mp3</code> into the <code>audio</code> folder. You can also use .wav, .m4a, .ogg, or .webm. Music loops quietly and starts after you click <strong>Start the Game</strong>. Use the 🎵 button to turn only music on or off, and the volume slider to adjust it. The 🔊 button still mutes everything.</p>
+      <p class="note" style="margin-top:20px"><strong>Note:</strong> “Scared” appears twice in your requested round list, so the 10-round game uses Scared twice but needs only one <code>Scared</code> image and one audio recording. Optional success and retry sounds can be added as <code>audio/Correct.mp3</code> and <code>audio/TryAgain.mp3</code>; the game still works without them.</p>
+    </section>
+  </main>
+  <p class="footer-note">Designed for classroom and home · Works offline · Your own files stay on your computer</p>
+</div>
+
+<div id="feedback-overlay" class="overlay" role="dialog" aria-modal="true" aria-labelledby="feedback-title" hidden>
+  <div class="dialog" id="feedback-dialog">
+    <div class="dialog-icon" id="feedback-icon" aria-hidden="true">⭐</div>
+    <h3 id="feedback-title">Great Job!</h3>
+    <p id="feedback-description">You found Happy!</p>
+    <button id="feedback-button" type="button" class="primary">Continue →</button>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// ============================================
+// EMOTIONS: The filenames match each "name".
+// Put your files in images/ and audio/.
+// ============================================
+const FEELINGS = [
+  {name:"Happy",     chinese:"开心", pinyin:"kāi xīn",    emoji:"😄", pale:"#e5fff1", border:"#b8ebcf"},
+  {name:"Sad",       chinese:"难过", pinyin:"nán guò",   emoji:"😢", pale:"#e5f3ff", border:"#bcdfff"},
+  {name:"Angry",     chinese:"生气", pinyin:"shēng qì",  emoji:"😠", pale:"#ffe8e7", border:"#ffcecc"},
+  {name:"Scared",    chinese:"害怕", pinyin:"hài pà",    emoji:"😨", pale:"#f1e9ff", border:"#ded1ff"},
+  {name:"Excited",   chinese:"兴奋", pinyin:"xīng fèn",  emoji:"🤩", pale:"#fff5d8", border:"#f5e3a2"},
+  {name:"Surprised", chinese:"惊讶", pinyin:"jīng yà",   emoji:"😮", pale:"#fff0d8", border:"#ffdaa4"},
+  {name:"Shy",       chinese:"害羞", pinyin:"hài xiū",   emoji:"😊", pale:"#ffedf5", border:"#f7c7df"},
+  {name:"Tired",     chinese:"累",   pinyin:"lèi",       emoji:"🥱", pale:"#eeefff", border:"#d4d6ff"},
+  {name:"Shocked",   chinese:"震惊", pinyin:"zhèn jīng", emoji:"😱", pale:"#e6fbff", border:"#b8edf4"}
+];
+
+// Scared intentionally appears twice, exactly as requested: 10 rounds / 9 unique feelings.
+const ROUND_NAMES = ["Happy","Sad","Angry","Scared","Excited","Surprised","Shy","Tired","Scared","Shocked"];
+const IMAGE_EXTENSIONS = ["png","jpg","jpeg","webp","gif","svg"];
+const AUDIO_EXTENSIONS = ["mp3","wav","m4a","ogg","webm"];
+const MUSIC_BASENAME = "BackgroundMusic";
+const byName = Object.fromEntries(FEELINGS.map(f => [f.name, f]));
+const media = Object.fromEntries(FEELINGS.map(f => [f.name, {image:null, audio:null, imageState:"loading", audioState:"loading"}]));
+const $ = id => document.getElementById(id);
+const els = {
+  headerScore:$("header-score"), sound:$("sound-toggle"), intro:$("intro-state"), game:$("game-state"), end:$("end-state"),
+  roundNumber:$("round-number"), roundTotal:$("round-total"), progress:$("progress-fill"), progressTrack:$("progress-track"),
+  targetWord:$("target-word"), targetChinese:$("target-chinese"), targetPinyin:$("target-pinyin"),
+  options:$("options"), learn:$("learn-grid"), list:$("filelist"), mediaCount:$("media-count"),
+  overlay:$("feedback-overlay"), dialog:$("feedback-dialog"), feedbackIcon:$("feedback-icon"),
+  feedbackTitle:$("feedback-title"), feedbackDescription:$("feedback-description"), feedbackButton:$("feedback-button"),
+  labelsButton:$("labels-btn"), endScore:$("end-score"),
+  musicButton:$("music-toggle"), musicVolume:$("music-volume"), musicVolumeLabel:$("music-volume-label"), musicFileRow:$("music-file-row")
+};
+let muted = false;
+let showLabels = true;
+let started = false;
+let rounds = [];
+let roundIndex = 0;
+let stars = 0;
+let locked = false;
+let activeAudio = null;
+let modalAction = null;
+let soundContext = null;
+// Background music uses a separate player so playing a word does not restart it.
+const backgroundMusic = new Audio();
+backgroundMusic.loop = true;
+backgroundMusic.preload = "none";
+backgroundMusic.volume = 0.18;
+let musicEnabled = true;
+let musicRequested = false;
+let musicPath = null;
+let musicFileState = "loading";
+const imageProbes = new Set();
+const audioProbes = new Set();
+
+function shuffle(items) {
+  const a = [...items];
+  for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function shuffledRounds() {
+  let candidate;
+  for (let i=0;i<40;i++) {
+    candidate=shuffle(ROUND_NAMES);
+    if (!candidate.some((name,n) => n>0 && name==="Scared" && candidate[n-1]==="Scared")) break;
+  }
+  return candidate.map(name => byName[name]);
+}
+function sanitize(text) { return String(text).replace(/[&<>"']/g, char=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char])); }
+function faceMarkup(feeling) {
+  const path=media[feeling.name].image;
+  if (path) return `<div class="face-frame"><img src="${path}" alt="${feeling.name} emotion picture"></div>`;
+  return `<div class="face-frame"><div class="face-placeholder"><span class="emoji" aria-hidden="true">${feeling.emoji}</span><span class="hint">Add ${feeling.name}.png</span></div></div>`;
+}
+
+// Detect the user's own files automatically, even if they use JPG instead of PNG or WAV instead of MP3.
+function probeImage(feeling) {
+  const info = media[feeling.name];
+  let idx=0;
+  function tryNext() {
+    if (idx>=IMAGE_EXTENSIONS.length) { info.imageState="missing"; refreshMediaUI(); return; }
+    const path=`images/${feeling.name}.${IMAGE_EXTENSIONS[idx++]}`;
+    const img=new Image(); imageProbes.add(img);
+    img.onload=()=>{ imageProbes.delete(img); info.image=path; info.imageState="found"; refreshMediaUI(); };
+    img.onerror=()=>{ imageProbes.delete(img); tryNext(); };
+    img.src=path;
+  }
+  tryNext();
+}
+function probeAudio(feeling) {
+  const info = media[feeling.name];
+  let idx=0;
+  function tryNext() {
+    if (idx>=AUDIO_EXTENSIONS.length) { info.audioState="missing"; refreshMediaUI(); return; }
+    const path=`audio/${feeling.name}.${AUDIO_EXTENSIONS[idx++]}`;
+    const a=new Audio(); audioProbes.add(a);
+    a.preload="metadata";
+    a.onloadedmetadata=()=>{ audioProbes.delete(a); info.audio=path; info.audioState="found"; a.onloadedmetadata=null; a.onerror=null; refreshMediaUI(); };
+    a.onerror=()=>{ audioProbes.delete(a); a.onloadedmetadata=null; a.onerror=null; tryNext(); };
+    a.src=path; a.load();
+  }
+  tryNext();
+}
+// Check for a user-supplied song using the same extension support as the vocabulary audio.
+function probeBackgroundMusic() {
+  let idx = 0;
+  function tryNext() {
+    if (idx >= AUDIO_EXTENSIONS.length) {
+      musicFileState = "missing";
+      renderMusicFileStatus();
+      return;
+    }
+    const path = `audio/${MUSIC_BASENAME}.${AUDIO_EXTENSIONS[idx++]}`;
+    const probe = new Audio();
+    audioProbes.add(probe);
+    probe.preload = "metadata";
+    probe.onloadedmetadata = () => {
+      audioProbes.delete(probe);
+      probe.onloadedmetadata = null;
+      probe.onerror = null;
+      musicPath = path;
+      musicFileState = "found";
+      renderMusicFileStatus();
+      if (musicRequested && musicEnabled && !muted) playBackgroundMusic();
+    };
+    probe.onerror = () => {
+      audioProbes.delete(probe);
+      probe.onloadedmetadata = null;
+      probe.onerror = null;
+      tryNext();
+    };
+    probe.src = path;
+    probe.load();
+  }
+  tryNext();
+}
+
+function renderMusicFileStatus() {
+  const label = musicFileState === "found" ? "✔ Found" : musicFileState === "loading" ? "◌ Checking" : "＋ Add your song";
+  const type = musicFileState === "found" ? "good" : musicFileState === "loading" ? "loading" : "missing";
+  const filename = musicPath || "audio/BackgroundMusic.mp3";
+  els.musicFileRow.innerHTML = `<div class="emotion-name">🎵 Background music</div><div class="asset-label ${type}">${label}</div><div class="asset-label"><code>${sanitize(filename)}</code></div>`;
+}
+
+function playBackgroundMusic() {
+  musicRequested = true;
+  if (!musicEnabled || muted || !musicPath) return;
+  const url = new URL(musicPath, document.baseURI).href;
+  if (backgroundMusic.src !== url) backgroundMusic.src = musicPath;
+  backgroundMusic.play().catch(() => {
+    // Browsers may require another click to allow audio; the music button can start it.
+  });
+}
+
+function refreshMusicButton() {
+  els.musicButton.textContent = musicEnabled ? "🎵 Music On" : "🎵 Music Off";
+  els.musicButton.setAttribute("aria-pressed", String(musicEnabled));
+  els.musicButton.title = musicEnabled ? "Turn background music off" : "Turn background music on";
+  els.musicButton.setAttribute("aria-label", els.musicButton.title);
+}
+
+function refreshMediaUI() {
+  renderLearn(); renderFileList();
+  if (started && !els.game.hidden && !locked) renderOptions();
+}
+function renderFileList() {
+  const foundImages=FEELINGS.filter(f=>media[f.name].imageState==="found").length;
+  const foundAudio=FEELINGS.filter(f=>media[f.name].audioState==="found").length;
+  els.mediaCount.textContent=`${foundImages}/9 images found · ${foundAudio}/9 audio clips found`;
+  els.list.innerHTML=FEELINGS.map(f=>{
+    const data=media[f.name];
+    const imageFile=data.image || `images/${f.name}.png`;
+    const audioFile=data.audio || `audio/${f.name}.mp3`;
+    function status(state) { return state==="found"?'<span class="good">✔</span>':state==="loading"?'<span class="loading">◌</span>':'<span class="missing">＋</span>'; }
+    return `<div class="file-row"><div class="emotion-name">${f.emoji} ${f.name}</div><div class="asset-label ${data.imageState==='found'?'good':'missing'}">${status(data.imageState)} 📷 <code>${sanitize(imageFile)}</code></div><div class="asset-label ${data.audioState==='found'?'good':'missing'}">${status(data.audioState)} 🔊 <code>${sanitize(audioFile)}</code></div></div>`;
+  }).join("");
+}
+function renderLearn() {
+  els.learn.innerHTML=FEELINGS.map(f=>`<button type="button" class="learn-card" data-name="${f.name}" style="--pale:${f.pale};--border:${f.border}" title="Hear ${f.name}">${faceMarkup(f)}<span class="learn-card-text"><strong>${f.name}</strong><span>${f.chinese} (${f.pinyin})</span><small>🔊 Tap to listen</small></span></button>`).join("");
+  els.learn.querySelectorAll(".learn-card").forEach(btn=>btn.addEventListener("click",()=>playWord(byName[btn.dataset.name])));
+}
+
+function stopVoice() {
+  if (activeAudio) { activeAudio.pause(); activeAudio.currentTime=0; activeAudio=null; }
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+}
+function say(text) {
+  if (muted || !("speechSynthesis" in window)) return;
+  try { const u=new SpeechSynthesisUtterance(text); u.lang="en-US"; u.rate=.82; u.pitch=1.06; window.speechSynthesis.speak(u); } catch(err) { console.warn("Speech unavailable",err); }
+}
+function playWord(feeling) {
+  if (muted) return;
+  stopVoice();
+  const path=media[feeling.name].audio;
+  if (!path) { say(feeling.name); return; }
+  activeAudio=new Audio(path);
+  activeAudio.play().catch(()=>say(feeling.name));
+}
+function beep(correct) {
+  if (muted) return;
+  try {
+    const AC=window.AudioContext||window.webkitAudioContext;
+    if (!AC) return;
+    soundContext ||= new AC();
+    if (soundContext.state==="suspended") soundContext.resume();
+    const notes=correct?[523,659,784]:[280,220];
+    notes.forEach((frequency,i)=>{
+      const osc=soundContext.createOscillator(),gain=soundContext.createGain();
+      const t=soundContext.currentTime+i*.11;
+      osc.type=correct?"sine":"triangle";
+      osc.frequency.setValueAtTime(frequency,t);
+      gain.gain.setValueAtTime(.0001,t);
+      gain.gain.exponentialRampToValueAtTime(.08,t+.015);
+      gain.gain.exponentialRampToValueAtTime(.0001,t+.17);
+      osc.connect(gain).connect(soundContext.destination);
+      osc.start(t); osc.stop(t+.18);
+    });
+  } catch(err) { console.warn("Audio effect unavailable",err); }
+}
+// Optional recorded feedback clips, otherwise use a small offline sound effect.
+function feedbackSound(correct) {
+  if (muted) return;
+  const path=correct?"audio/Correct.mp3":"audio/TryAgain.mp3";
+  const effect=new Audio(path);
+  let failed=false;
+  effect.addEventListener("error",()=>{ if(!failed) { failed=true; beep(correct); } },{once:true});
+  effect.play().catch(()=>{ if(!failed) { failed=true; beep(correct); } });
+}
+
+function selectTab(tabName) {
+  document.querySelectorAll(".tab").forEach(tab=>{
+    const active=tab.dataset.tab===tabName;
+    tab.classList.toggle("active",active); tab.setAttribute("aria-selected",String(active));
+  });
+  for (const name of ["quiz","learn","media"]) $(name+"-panel").hidden=name!==tabName;
+}
+function newGame() {
+  stopVoice();
+  rounds=shuffledRounds(); roundIndex=0; stars=0; locked=false; started=true; renderOptions.choiceKey=null;
+  els.intro.hidden=true; els.game.hidden=false; els.end.hidden=true; els.headerScore.textContent="0";
+  showRound();
+  playBackgroundMusic(); // Starts only after the student/teacher clicks Start.
+  playWord(rounds[roundIndex]); // Start-button click allows audio playback.
+}
+function showRound() {
+  if (roundIndex>=rounds.length) { finishGame(); return; }
+  stopVoice(); locked=false;
+  const target=rounds[roundIndex];
+  els.roundNumber.textContent=String(roundIndex+1);
+  els.roundTotal.textContent=String(rounds.length);
+  els.progressTrack.setAttribute("aria-valuemax",String(rounds.length));
+  els.progressTrack.setAttribute("aria-valuenow",String(roundIndex));
+  els.progress.style.width=`${100*roundIndex/rounds.length}%`;
+  els.targetWord.textContent=target.name; els.targetChinese.textContent=target.chinese; els.targetPinyin.textContent=`(${target.pinyin})`;
+  renderOptions();
+  // Play again at any time using the Listen button.
+}
+function renderOptions() {
+  const target=rounds[roundIndex];
+  if (!target) return;
+  const other=shuffle(FEELINGS.filter(f=>f.name!==target.name)).slice(0,3);
+  // Preserve choices for this round even if a picture finishes loading later.
+  if (!renderOptions.choiceKey || renderOptions.choiceKey!==roundIndex) {
+    renderOptions.options=shuffle([target,...other]); renderOptions.choiceKey=roundIndex;
+  }
+  els.options.classList.toggle("hide-labels",!showLabels);
+  els.options.innerHTML=renderOptions.options.map(f=>`<button type="button" class="option" data-name="${f.name}" style="--pale:${f.pale};--border:${f.border}" aria-label="Choose ${f.name}">${faceMarkup(f)}<span class="option-name">${f.name}</span><span class="option-chinese">${f.chinese}</span></button>`).join("");
+  els.options.querySelectorAll(".option").forEach(btn=>btn.addEventListener("click",()=>choose(byName[btn.dataset.name],btn)));
+}
+function choose(feeling,button) {
+  if (locked) return;
+  const target=rounds[roundIndex];
+  const correct=feeling.name===target.name;
+  stopVoice();
+  if (correct) { locked=true; stars++; els.headerScore.textContent=String(stars); }
+  else { button.classList.add("wrong"); }
+  feedbackSound(correct);
+  els.dialog.style.setProperty("--modal-border",correct?"#6bd9a5":"#ffcf70");
+  els.feedbackIcon.textContent=correct?"🌟":"💪";
+  els.feedbackTitle.textContent=correct?"Awesome! / 太棒了!":"Try Again! / 再试一次!";
+  els.feedbackDescription.textContent=correct?`Yes! That is ${target.name} (${target.chinese}). You earned a star!`:`That picture shows ${feeling.name}. Look for ${target.name}!`;
+  els.feedbackButton.textContent=correct?roundIndex===rounds.length-1?"See My Score 🏆":"Next Round →":"Try Again ↩";
+  modalAction=()=>{ els.overlay.hidden=true; if(correct) { roundIndex++; showRound(); if(roundIndex<rounds.length) playWord(rounds[roundIndex]); } };
+  els.overlay.hidden=false;
+  els.feedbackButton.focus();
+}
+function finishGame() {
+  started=false; locked=true; stopVoice();
+  els.game.hidden=true; els.end.hidden=false;
+  els.endScore.textContent=`${stars} / ${rounds.length} ⭐`;
+  els.progressTrack.setAttribute("aria-valuenow",String(rounds.length));
+}
+function nextRound() { if (!started) return; stopVoice(); roundIndex++; showRound(); if(roundIndex<rounds.length) playWord(rounds[roundIndex]); }
+
+// ============================================
+// Button events
+// ============================================
+document.querySelectorAll(".tab").forEach(tab=>tab.addEventListener("click",()=>selectTab(tab.dataset.tab)));
+$("start-btn").addEventListener("click",newGame);
+$("play-again-btn").addEventListener("click",newGame);
+$("restart-btn").addEventListener("click",newGame);
+$("skip-btn").addEventListener("click",nextRound);
+$("hear-btn").addEventListener("click",()=>{ if(started) playWord(rounds[roundIndex]); });
+$("labels-btn").addEventListener("click",()=>{
+  showLabels=!showLabels;
+  els.labelsButton.setAttribute("aria-pressed",String(!showLabels));
+  els.labelsButton.textContent=showLabels?"🙈 Hide Answer Labels":"👀 Show Answer Labels";
+  els.options.classList.toggle("hide-labels",!showLabels);
+});
+$("sound-toggle").addEventListener("click",()=>{
+  muted=!muted;
+  if (muted) { stopVoice(); backgroundMusic.pause(); }
+  else if (musicRequested && musicEnabled) playBackgroundMusic();
+  els.sound.textContent=muted?"🔇":"🔊";
+  els.sound.title=muted?"Unmute sound":"Mute sound";
+  els.sound.setAttribute("aria-label",els.sound.title);
+});
+$("music-toggle").addEventListener("click",()=>{
+  musicEnabled = !musicEnabled;
+  if (musicEnabled) playBackgroundMusic();
+  else backgroundMusic.pause();
+  refreshMusicButton();
+});
+$("music-volume").addEventListener("input",()=>{
+  const volume = Number(els.musicVolume.value);
+  backgroundMusic.volume = volume / 100;
+  els.musicVolumeLabel.textContent = `${volume}%`;
+});
+$("feedback-button").addEventListener("click",()=>{ if(modalAction) modalAction(); });
+$("recheck-btn").addEventListener("click",()=>window.location.reload());
+document.addEventListener("keydown",event=>{ if(event.key==="Escape"&&!els.overlay.hidden) { if(!locked) els.overlay.hidden=true; else if(modalAction) modalAction(); } });
+
+// Initial rendering and scanning for media files.
+renderLearn(); renderFileList();
+FEELINGS.forEach(f=>{ probeImage(f); probeAudio(f); });
+probeBackgroundMusic();
+</script>
+</body>
+</html>
